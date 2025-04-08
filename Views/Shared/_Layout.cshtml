@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/JqueryUI/jquery-ui.min.js"></script>
+    <link href="~/Scripts/JqueryUI/jquery-ui.min.css" rel="stylesheet" />
+    @{
+        if (@Session["User"] == null)
+        {
+            Response.Redirect(Url.Action("Login", "Auth"));
+
+        }
+    }
+
+
+    <script>
+        var sessionUser = "@Session["User"].ToString()";
+        var RedirectUrl = "@Url.Action("Login", "Auth")";
+
+        if (sessionUser == '') {
+            window.location.href = RedirectUrl;
+        }
+
+        //var isIdle = false;
+        //var timeStart = new date();
+
+        //$(document).ready(function () {
+        //    //setInterval(function () {
+        //    //    $('body').on('hover', function () {
+        //    //        timeStart = new date();
+        //    //        isIdle = false;
+        //    //    })
+        //    //}, 1000)
+        //})
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="width:100px; float:right; color:white">
+            @Session["User"].ToString()
+        </div>
+    </nav>
+
+    <div style="position:absolute; left:0px; width:300px; top:56px; bottom:0px; background:#808080">
+        <footer style="position:absolute; height:50px; width:100%; bottom:0px; text-align:center; color:white">
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    <div style="position:absolute; left:300px; right:0px; top:56px; bottom:0px;">
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

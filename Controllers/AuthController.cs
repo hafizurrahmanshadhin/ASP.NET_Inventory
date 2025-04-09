@@ -35,7 +35,13 @@ namespace Inventory.Controllers
             }
             return View();
         }
+
+        public ActionResult Logout()
+        {
+            Session["User"] = null;
+            return RedirectToAction("Login");
+        }
     }
 }
 
-//Next Module 9 Controller Responsibility after 30 minutes
+//Next Module 9 Controller Responsibility after 5 minutes (First Vide, 58 minute)

@@ -58,6 +58,10 @@
 
         <div style="width:100px; float:right; color:white">
             @Session["User"].ToString()
+
+            <form action="/Auth/Logout">
+                <input type="submit" value="Logout"/>
+            </form>
         </div>
     </nav>
 

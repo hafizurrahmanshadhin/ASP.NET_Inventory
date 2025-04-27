@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Data;
 
 namespace Inventory.Models
 {
@@ -13,6 +15,7 @@ namespace Inventory.Models
         public int Count { get; set; }
         public DateTime EntryDate { get; set; }
         public Member Member { get; set; }
+        public int Stock { get; set; }
 
         public Equipment()
         {
@@ -21,45 +24,74 @@ namespace Inventory.Models
 
         public static List<Equipment> LstEquipment()
         {
-            List<Equipment> list = new List<Equipment>();
-
-            string ConnString = COnfigurationManager.ConnectionStrings["ConnString"].ConnectionString;
+            List<Equipment> plstData = new List<Equipment>();
+            
+            string ConnString = ConfigurationManager.ConnectionStrings["ConnString"].ConnectionString;
             // Application Name
             SqlConnection connection = new SqlConnection(ConnString);
             connection.Open();
 
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = connection;
-            cmd.CommandText = "SELECT * FROM Equipment";
-            cmd.Parameters.clear();
-            //cmd.Parameters.Add(new SqlParameter("@UserName", this.UserName));
-            //cmd.Parameters.Add(new SqlParameter("@Password", this.Password));
+            cmd.CommandText = "dbo.spOST_LstEquipment";
+            //cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            ////cmd.Parameters.Add(new SqlParameter("@UserName", this.UserName));
+            ////cmd.Parameters.Add(new SqlParameter("@Password", this.Password));
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandTimeout = 0;
 
-            SqlDataReader reader = cmd.ExecuteReader();
-            if(reader.HasRows)
+            SqlDataReader mrd = cmd.ExecuteReader();
+            if (mrd.HasRows)
             {
-                while (reader.Read())
+                while (mrd.Read())
                 {
-                    Equipment equipment = new Equipment();
-                    equipment.EquipmentId = reader.GetInt32(0);
-                    equipment.Name = reader.GetString(1);
-                    equipment.Count = reader.GetInt32(2);
-                    equipment.EntryDate = reader.GetDateTime(3);
-                    list.Add(equipment);
+                    Equipment obj = new Equipment();
+                    obj.EquipmentId = Convert.ToInt32(mrd["EquipmentId"].ToString());
+                    obj.Name = mrd["EquipmentName"].ToString();
+                    obj.Count = Convert.ToInt16(mrd["Quantity"].ToString());
+                    obj.Stock = Convert.ToInt16(mrd["Stock"].ToString());
+                    obj.EntryDate = Convert.ToDateTime(mrd["EntryDate"].ToString());
+
+                    plstData.Add(obj);
                 }
             }
 
-            //for(int i = 1; i <= 30; i++)
-            //{
-            //    Equipment equipment = new Equipment();
-            //    equipment.Name = "Laptop "+i.ToString();
-            //    equipment.Count = i * 5;
-            //    equipment.EntryDate = DateTime.Now.Date;
-            //    list.Add(equipment);
-            //}
-            return list;
+
+            cmd.Dispose();
+            connection.Close();
+
+            return plstData;
+        }
+
+        public static DataTable dtEquipment()
+        {
+            //List<Equipment> list = new List<Equipment>();
+            DataTable dataTable = new DataTable();
+
+            string ConnString = ConfigurationManager.ConnectionStrings["ConnString"].ConnectionString;
+            // Application Name
+            SqlConnection connection = new SqlConnection(ConnString);
+            connection.Open();
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = connection;
+            cmd.CommandText = "dbo.spOST_LstEquipment";
+            //cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Clear();
+            ////cmd.Parameters.Add(new SqlParameter("@UserName", this.UserName));
+            ////cmd.Parameters.Add(new SqlParameter("@Password", this.Password));
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 0;
+
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            adapter.Fill(dataTable);
+
+
+            cmd.Dispose();
+            connection.Close();
+
+            return dataTable;
         }
 
         public static List<Equipment> LstAssignedEquipment()

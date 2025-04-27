@@ -1,4 +1,5 @@
 ﻿@using Inventory.Models;
+@using System.Data;
 @{
     ViewBag.Title = "Home Page";
 }
@@ -9,16 +10,6 @@
             height: 400,
             width: 350,
             modal: true,
-            //buttons: {
-            //    "Create an account": addUser,
-            //    Cancel: function () {
-            //        dialog.dialog("close");
-            //    }
-            //},
-            //close: function () {
-            //    form[0].reset();
-            //    allFields.removeClass("ui-state-error");
-            //}
         });
     }
 </script>
@@ -42,7 +33,30 @@
                         </tr>
 
                         @{
-                            List<Equipment> equipment = Equipment.LstEquipment();
+                            @*System.Data.DataTable dataTable = new System.Data.DataTable();
+                                dataTable = Equipment.dtEquipment();
+
+                                var pData = (from p in dataTable.AsEnumerable() select new
+                                {
+                                    EquipmentId = p.Field<Int32>("EquipmentId"),
+                                    Name = p.Field<string>("EquipmentName"),
+                                    Count = p.Field<Int32>("Quantity"),
+                                    //Stock
+                                    EntryDate = p.Field<DateTime>("EntryDate"),
+                                }).ToList();
+
+
+                                foreach (var obj in pData)
+                                {
+                                    <tr>
+                                        <td style="display:none">@obj.EquipmentId</td>
+                                        <td>@obj.Name</td>
+                                        <td>@obj.Count</td>
+                                        <td>@obj.EntryDate</td>
+                                    </tr>
+                                }*@
+
+                            List<Equipment> equipment = Equipment.LstAssignedEquipment();
                             foreach (Equipment obj in equipment)
                             {
                                 <tr>
